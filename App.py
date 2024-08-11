@@ -6,6 +6,7 @@ from Personaje import Personaje
 from Mision import Mision
 import csv
 import matplotlib.pyplot as plt
+import pandas as pd
 
 class App:
     peliculas_obj = []
@@ -118,6 +119,7 @@ MENU
                         continue  
             
             elif opcion_menu == '7':
+                self.tablas_naves()
                 while True:
                     opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
                     if opcion_0 == '0':
@@ -858,3 +860,79 @@ NAVES:''')
         # Mostrar el gráfico
         plt.show()
 
+    def tablas_naves(self):
+
+        ruta = 'starships.csv'  # Cambia esto a la ruta de tu archivo
+        df = pd.read_csv(ruta)
+
+        # Seleccionar las columnas relevantes
+        estadisticas_df = df[['starship_class', 'hyperdrive_rating', 'MGLT', 'max_atmosphering_speed', 'cost_in_credits']]
+
+        # Calcular las estadísticas para "Clasificación de hiperimpulsor"
+        hyperdrive_estadisticas = estadisticas_df.groupby('starship_class').agg(
+            hyperdrive_media=('hyperdrive_rating', 'mean'),
+            hyperdrive_moda=('hyperdrive_rating', lambda x: x.mode()[0] if not x.mode().empty else None),
+            hyperdrive_minimo=('hyperdrive_rating', 'min'),
+            hyperdrive_maximo=('hyperdrive_rating', 'max')
+        ).reset_index()
+
+        # Redondear y reemplazar NaN en hyperdrive_stats
+        hyperdrive_estadisticas = hyperdrive_estadisticas.round(2).fillna("-")
+
+        # Renombrar columnas de hyperdrive_stats
+        hyperdrive_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
+
+        # Calcular las estadísticas para "MGLT"
+        MGLT_estadisticas = estadisticas_df.groupby('starship_class').agg(
+            MGLT_media=('MGLT', 'mean'),
+            MGLT_moda=('MGLT', lambda x: x.mode()[0] if not x.mode().empty else None),
+            MGLT_minimo=('MGLT', 'min'),
+            MGLT_maximo=('MGLT', 'max')
+        ).reset_index()
+
+        # Redondear y reemplazar NaN en MGLT_stats
+        MGLT_estadisticas = MGLT_estadisticas.round(2).fillna("-")
+
+        # Renombrar columnas de MGLT_stats
+        MGLT_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
+
+        # Calcular las estadísticas para "Velocidad máxima en atmósfera"
+        max_speed_estadisticas = estadisticas_df.groupby('starship_class').agg(
+            max_speed_media=('max_atmosphering_speed', 'mean'),
+            max_speed_moda=('max_atmosphering_speed', lambda x: x.mode()[0] if not x.mode().empty else None),
+            max_speed_minimo=('max_atmosphering_speed', 'min'),
+            max_speed_maximo=('max_atmosphering_speed', 'max')
+        ).reset_index()
+
+        # Redondear y reemplazar NaN en max_speed_stats
+        max_speed_estadisticas = max_speed_estadisticas.round(2).fillna("-")
+
+        # Renombrar columnas de max_speed_stats
+        max_speed_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
+
+        # Calcular las estadísticas para "Costo (en créditos)"
+        cost_estadisticas = estadisticas_df.groupby('starship_class').agg(
+            cost_media=('cost_in_credits', 'mean'),
+            cost_moda=('cost_in_credits', lambda x: x.mode()[0] if not x.mode().empty else None),
+            cost_minimo=('cost_in_credits', 'min'),
+            cost_maximo=('cost_in_credits', 'max')
+        ).reset_index()
+
+        # Redondear y reemplazar NaN en cost_stats
+        cost_estadisticas = cost_estadisticas.round(2).fillna("-")
+
+        # Renombrar columnas de cost_stats
+        cost_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
+
+        # Mostrar las tablas
+        print("Estadísticas para 'Clasificación de hiperimpulsor':")
+        print(hyperdrive_estadisticas, "\n")
+
+        print("Estadísticas para 'MGLT':")
+        print(MGLT_estadisticas, "\n")
+
+        print("Estadísticas para 'Velocidad máxima en atmósfera':")
+        print(max_speed_estadisticas, "\n")
+
+        print("Estadísticas para 'Costo (en créditos)':")
+        print(cost_estadisticas, "\n")
