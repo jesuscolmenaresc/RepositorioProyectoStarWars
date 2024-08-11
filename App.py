@@ -3,6 +3,7 @@ from Pelicula import Pelicula
 from Especie import Especie
 from Planeta import Planeta
 from Personaje import Personaje
+from Mision import Mision
 
 class App:
     peliculas_obj = []
@@ -14,13 +15,13 @@ class App:
         print('''BIENVENIDO
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
-        self.cargar_datos_peliculas()
+        #self.cargar_datos_peliculas()
         print('Peliculas ha sido cargado exitosamente...')
-        self.cargar_datos_especies()
+        #self.cargar_datos_especies()
         print('Especies ha sido cargado exitosamente...')
-        self.cargar_datos_planetas()
+        #self.cargar_datos_planetas()
         print('Planetas ha sido cargado exitosamente...')
-        self.cargar_datos_personajes()
+        #self.cargar_datos_personajes()
         print(f'Personajes ha sido cargado exitosamente...')
 
         self.menu()
@@ -108,6 +109,7 @@ MENU
 
             
             elif opcion_menu == '7':
+                self.submenu_misiones()
                 while True:
                     opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
                     if opcion_0 == '0':
@@ -115,7 +117,7 @@ MENU
                         break
                     else:
                         print('Opcion invalida')
-                        continue  
+                        continue
 
             elif opcion_menu == '8':
                 print('Saliendo...')
@@ -339,3 +341,198 @@ MENU
                 nombre_personajes_planeta.append(db['name'])
 
             self.planetas_obj.append(Planeta(nombre, periodo_rotacion, periodo_orbita, clima, poblacion, nombre_episodios, nombre_personajes_planeta))
+
+    def submenu_misiones(self):
+        while True:
+            print('''----------------------------------------
+    SUBMENÚ MISIONES
+    ----------------------------------------
+    1. Agregar misión
+    2. Modificar misión
+    3. Visualizar misión
+    4. Guardar misiones
+    5. Cargar misiones
+    0. Volver al menú principal
+    ----------------------------------------''')
+            opcion = input('Seleccione una opción del submenú misiones: ').strip()
+
+            if opcion == '1':
+                self.agregar_mision()
+            elif opcion == '2':
+                self.modificar_mision()
+            elif opcion == '3':
+                self.visualizar_mision()
+            elif opcion == '4':
+                self.guardar_misiones()
+            elif opcion == '5':
+                self.cargar_misiones()
+            elif opcion == '0':
+                break
+            else:
+                print("Opción inválida.")
+                continue
+
+    def __init__(self):
+        self.misiones = []
+
+    # Requerimiento H: Construir mision
+    def agregar_mision(self):
+        if len(self.misiones) >= 5:
+            print("No puedes definir más de 5 misiones.")
+            return
+
+        nombre = input("Ingrese el nombre de la misión: ")
+        planeta_destino = input("Ingrese el planeta destino: ")
+        nave = input("Ingrese la nave a utilizar: ")
+
+        armas = [input("Ingrese arma (o presione Enter para omitir): ") for _ in range(7)]
+
+        integrantes = [input("Ingrese integrante (o presione Enter para omitir): ") for _ in range(7)]
+
+        mision = Mision(nombre, planeta_destino, nave, armas, integrantes)
+
+        self.misiones.append(mision)
+        print("Misión agregada exitosamente.")
+
+    # Requerimiento I: Modificar Mision
+    def modificar_mision(self):
+        nombre_mision = input("Ingrese el nombre de la misión a modificar: ")
+
+        # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
+        mision = next((m for m in self.misiones if m.nombre == nombre_mision), None)
+
+        if not mision:
+            print("Misión no encontrada.")
+            return
+
+        print("Selecciona el atributo de la misión que deseas modificar:")
+        print("1. Nave")
+        print("2. Armas")
+        print("3. Integrantes")
+        opcion = input("Escribe el número de la opción que deseas modificar: ")
+
+        if opcion == '1':
+            nueva_nave = input("Ingrese la nueva nave a utilizar: ")
+            mision.nave = nueva_nave
+            print("Nave actualizada exitosamente.")
+
+        elif opcion == '2':
+            print("Actualmente las armas de la misión son: ", mision.armas)
+            decision = input("¿Deseas agregar o eliminar armas? (agregar/eliminar): ")
+
+            if decision.lower() == 'agregar':
+                while len(mision.armas) < 7:
+                    nueva_arma = input("Ingrese la nueva arma a añadir o escriba 'salir' para terminar: ")
+                    if nueva_arma.lower() == 'salir':
+                        break
+
+                    if nueva_arma not in mision.armas:
+                        mision.armas.append(nueva_arma)
+                        print("Arma añadida.")
+
+                    else:
+                        print("Esta arma ya está en la lista.")
+
+                if len(mision.armas) == 7:
+                    print("Has alcanzado el máximo número de armas permitidas (7).")
+
+            elif decision.lower() == 'eliminar':
+                arma_a_eliminar = input("Ingrese el arma a eliminar: ")
+                if arma_a_eliminar in mision.armas:
+                    mision.armas.remove(arma_a_eliminar)
+                    print("Arma eliminada.")
+
+                else:
+                    print("El arma no se encuentra en la lista.")
+
+            else:
+                print("Opción no válida.")
+
+        elif opcion == '3':
+            print("Actualmente los integrantes de la misión son: ", mision.integrantes)
+            decision = input("¿Deseas agregar o eliminar integrantes? (agregar/eliminar): ")
+            if decision.lower() == 'agregar':
+                while len(mision.integrantes) < 7:
+                    nuevo_integrante = input("Ingrese el nuevo integrante a añadir o escriba 'salir' para terminar: ")
+                    if nuevo_integrante.lower() == 'salir':
+                        break
+                    if nuevo_integrante not in mision.integrantes:
+                        mision.integrantes.append(nuevo_integrante)
+                        print("Integrante añadido.")
+
+                    else:
+                        print("Este integrante ya está en la lista.")
+
+                if len(mision.integrantes) == 7:
+                    print("Has alcanzado el máximo número de integrantes permitidos (7).")
+
+            elif decision.lower() == 'eliminar':
+                integrante_a_eliminar = input("Ingrese el integrante a eliminar: ")
+
+                if integrante_a_eliminar in mision.integrantes:
+                    mision.integrantes.remove(integrante_a_eliminar)
+                    print("Integrante eliminado.")
+
+                else:
+                    print("El integrante no se encuentra en la lista.")
+
+            else:
+                print("Opción no válida.")
+
+        else:
+            print("Opción no válida.")
+
+    # Requerimiento J: Visualizar mision
+    def visualizar_mision(self):
+        nombre_mision = input("Ingrese el nombre de la misión a visualizar: ")
+
+        # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
+        mision = next((m for m in self.misiones if m.nombre == nombre_mision), None)
+
+        if mision:
+            mision.mostrar_detalle()
+        else:
+            print("Misión no encontrada.")
+
+    # Requerimiento K: Guardar misiones
+    def guardar_misiones(self):
+        # Se abre el archivo en modo de escritura
+        with open('misiones.txt', 'w') as file:
+            for mision in self.misiones:
+                # Se agrega el separador '|' entre armas para que ',' sea solo para separar atributos principales
+                armas = '|'.join(mision.armas)
+
+                # Se agrega el separador ';' entre integrantes para que ',' sea solo para separar atributos principales
+                integrantes = ';'.join(mision.integrantes)
+
+                file.write(f"{mision.nombre},{mision.planeta_destino},{mision.nave},{armas},{integrantes}\n")
+        print("Misiones guardadas exitosamente.")
+
+    # Requerimiento L: Cargar misiones
+    def cargar_misiones(self):
+        try:
+            # Intentar abrir el archivo en modo de lectura
+            with open('misiones.txt', 'r') as file:
+                self.misiones = []  # Limpiar la lista actual de misiones para evitar duplicados
+                for line in file:
+                    nombre, planeta_destino, nave, armas_str, integrantes_str = line.strip().split(',')
+
+                    # El separador '|' entre armas es para que ',' separe los atributos principales de la mision
+                    armas = armas_str.split('|')
+
+                    # El separador ';' entre integrantes es para que ',' separe los atributos principales de la mision
+                    integrantes = integrantes_str.split(';')
+                    mision = Mision(nombre, planeta_destino, nave, armas, integrantes)
+
+                    self.misiones.append(mision)
+            print("Misiones cargadas exitosamente.")
+
+        except FileNotFoundError:
+            # Si el archivo no existe, se crea un archivo vacío
+            open('misiones.txt', 'w').close()
+            print("No se encontró el archivo de misiones, se ha creado un archivo nuevo.")
+
+            self.misiones = []  # Asegurarse de que la lista de misiones esté vacía
+
+        except Exception as e:
+            print(f"Error al cargar misiones: {str(e)}")
