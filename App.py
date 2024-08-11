@@ -5,6 +5,7 @@ from Planeta import Planeta
 from Personaje import Personaje
 from Mision import Mision
 import csv
+import matplotlib.pyplot as plt
 
 class App:
     peliculas_obj = []
@@ -43,8 +44,9 @@ MENU
 3. Lista de planetas
 4. Buscar personaje
 5. Grafico de cantidad de personajes nacidos en cada planeta
-6. Informacion sobre naves
-7. Misiones
+6. Grafico de caracteristicas de naves
+7. Tabla de estadisticas sobre naves
+8. Misiones
 0. Salir
 ----------------------------------------''')
             opcion_menu = (input('Seleccione una opcion: ')).strip()
@@ -94,6 +96,7 @@ MENU
                         continue  
 
             elif opcion_menu == '5':
+                self.grafico_cantidad_personas()
                 while True:
                     opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
                     if opcion_0 == '0':
@@ -104,6 +107,7 @@ MENU
                         continue  
 
             elif opcion_menu == '6':
+                self.graficos_caracteristicas()
                 while True:
                     opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
                     if opcion_0 == '0':
@@ -112,9 +116,17 @@ MENU
                     else:
                         print('Opcion invalida')
                         continue  
-
             
             elif opcion_menu == '7':
+                while True:
+                    opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
+                    if opcion_0 == '0':
+                        print('Regresando...')
+                        break
+                    else:
+                        print('Opcion invalida')
+
+            elif opcion_menu == '8':
                 self.submenu_misiones()
 
             elif opcion_menu == '0':
@@ -745,3 +757,104 @@ NAVES:''')
 
         except Exception as e:
             print(f"Error al cargar misiones: {str(e)}")
+
+    def personajes_en_cada_planeta(self): 
+        info =open('characters.csv', 'r')
+        planetas={}
+        caracteres= csv.DictReader(info)
+        for elementos in caracteres:
+            planeta=elementos['homeworld']
+            if planeta in planetas:
+                planetas[planeta]+=1
+            else:
+                planetas[planeta]=1
+
+        personajes_planeta=list(planetas.keys())
+        cantidad_personajes_planeta=list(planetas.values())
+        info.close()
+        return personajes_planeta, cantidad_personajes_planeta
+
+    def grafico_cantidad_personas(self):
+        personaje_planeta, cantidad_personajes_planeta = self.personajes_en_cada_planeta()
+        fig, ax= plt.subplots()
+        plt.bar(personaje_planeta,cantidad_personajes_planeta)
+        plt.xlabel('personaje por planeta')
+        plt.ylabel('Numero de personajes nacidos en un planeta')
+        plt.title('Planeta de nacimiento de los personajes')
+        plt.xticks(rotation=45,ha='right')
+        plt.show()
+
+    def longitud_naves(self):  
+        info=open('starships.csv','r')
+        longitud_naves={}
+        caracteres=csv.DictReader(info)  
+        for elementos in caracteres:
+            longitud_naves[elementos['name']]=(float((elementos['length'])))/100 # es del tipo: float 
+        info.close()
+        return longitud_naves
+
+    def capacidad_carga(self):
+        info=open('starships.csv','r')
+        capacidad_carga={}
+        caracteres=csv.DictReader(info) 
+        for elementos in caracteres:
+            if elementos['cargo_capacity'] == '':
+                elementos['cargo_capacity'] = 0
+            capacidad_carga[elementos['name']]=float((elementos['cargo_capacity']))/1000000 # es del tipo: float
+        info.close()
+        return capacidad_carga
+
+    def clasificacion_hiperimpulsor(self):
+        info=open('starships.csv', 'r')
+        clasificacion_hiperimpulsor = {}
+        caracteres=csv.DictReader(info)
+        for elementos in caracteres:
+            if elementos['hyperdrive_rating'] == '':
+                elementos['hyperdrive_rating'] = 0
+            clasificacion_hiperimpulsor[elementos['name']] = (float((elementos['hyperdrive_rating'])))*10  # es del tipo: float
+        info.close()
+        return clasificacion_hiperimpulsor
+
+    def MGLT_naves(self):
+        info=open('starships.csv', 'r')
+        MGLT_naves={}
+        caracteres = csv.DictReader(info)
+        for elementos in caracteres:
+            if elementos['MGLT'] == '':
+                elementos['MGLT'] = 0
+            MGLT_naves[elementos['name']] = float((elementos['MGLT']))  # es del tipo: float
+        info.close()
+        return MGLT_naves
+
+    def graficos_caracteristicas(self):
+
+        naves_longitud = self.longitud_naves()
+        naves_capacidad_carga = self.capacidad_carga()
+        naves_clasificacion_hiperimpulsor = self.clasificacion_hiperimpulsor()
+        naves_mglt = self.MGLT_naves()
+
+        # Ordenar llaves y valores de cada diccionario
+        naves = sorted(naves_longitud.keys())
+        longitudes = [naves_longitud[nave] for nave in naves]
+        capacidades_carga = [naves_capacidad_carga[nave] for nave in naves]
+        clasificaciones_hiperimpulsor = [naves_clasificacion_hiperimpulsor[nave] for nave in naves]
+        mglts = [naves_mglt[nave] for nave in naves]
+
+        # Crear el gráfico
+        fig, ax = plt.subplots()
+
+        # Agregar las barras para cada característica
+        ax.bar(naves, longitudes, label=('Longitud (x10^2)'))
+        ax.bar(naves, capacidades_carga, bottom=longitudes, label=('Capacidad de carga (x10^6)'))
+        ax.bar(naves, clasificaciones_hiperimpulsor, bottom=[x + y for x, y in zip(longitudes, capacidades_carga)], label=('Clasificación de hiperimpulsor (x10^-1)'))
+        ax.bar(naves, mglts, bottom=[x + y + z for x, y, z in zip(longitudes, capacidades_carga, clasificaciones_hiperimpulsor)], label='MGLT (x10^1)')
+
+        # Agregar título y leyenda
+        ax.set_title('Características de naves')
+        ax.legend()
+        plt.xticks(rotation=90,ha='right')
+        plt.ylabel('Cantidad de atributos')
+
+        # Mostrar el gráfico
+        plt.show()
+
