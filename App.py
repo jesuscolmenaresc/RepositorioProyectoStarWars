@@ -4,24 +4,26 @@ from Especie import Especie
 from Planeta import Planeta
 from Personaje import Personaje
 from Mision import Mision
+import csv
 
 class App:
     peliculas_obj = []
     especies_obj = []
     planetas_obj  = []
     personajes_obj = []
+    misiones_obj = []
 
     def start(self):
         print('''BIENVENIDO
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
-        #self.cargar_datos_peliculas()
+        self.cargar_datos_peliculas()
         print('Peliculas ha sido cargado exitosamente...')
-        #self.cargar_datos_especies()
+        self.cargar_datos_especies()
         print('Especies ha sido cargado exitosamente...')
-        #self.cargar_datos_planetas()
+        self.cargar_datos_planetas()
         print('Planetas ha sido cargado exitosamente...')
-        #self.cargar_datos_personajes()
+        self.cargar_datos_personajes()
         print(f'Personajes ha sido cargado exitosamente...')
 
         self.menu()
@@ -39,7 +41,7 @@ MENU
 5. Grafico de cantidad de personajes nacidos en cada planeta
 6. Informacion sobre naves
 7. Misiones
-8. Salir
+0. Salir
 ----------------------------------------''')
             opcion_menu = (input('Seleccione una opcion: ')).strip()
 
@@ -110,16 +112,8 @@ MENU
             
             elif opcion_menu == '7':
                 self.submenu_misiones()
-                while True:
-                    opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
-                    if opcion_0 == '0':
-                        print('Regresando...')
-                        break
-                    else:
-                        print('Opcion invalida')
-                        continue
 
-            elif opcion_menu == '8':
+            elif opcion_menu == '0':
                 print('Saliendo...')
                 break
             else:
@@ -345,15 +339,15 @@ MENU
     def submenu_misiones(self):
         while True:
             print('''----------------------------------------
-    SUBMENÚ MISIONES
-    ----------------------------------------
-    1. Agregar misión
-    2. Modificar misión
-    3. Visualizar misión
-    4. Guardar misiones
-    5. Cargar misiones
-    0. Volver al menú principal
-    ----------------------------------------''')
+SUBMENÚ MISIONES
+----------------------------------------
+1. Agregar misión
+2. Modificar misión
+3. Visualizar misión
+4. Guardar misiones
+5. Cargar misiones
+0. Volver al menú principal
+----------------------------------------''')
             opcion = input('Seleccione una opción del submenú misiones: ').strip()
 
             if opcion == '1':
@@ -372,17 +366,37 @@ MENU
                 print("Opción inválida.")
                 continue
 
-    def __init__(self):
-        self.misiones = []
-
-    # Requerimiento H: Construir mision
+    # Construir mision
     def agregar_mision(self):
-        if len(self.misiones) >= 5:
+        if len(self.misiones_obj) >= 5:
             print("No puedes definir más de 5 misiones.")
             return
 
         nombre = input("Ingrese el nombre de la misión: ")
-        planeta_destino = input("Ingrese el planeta destino: ")
+
+        print('''----------------------------------------
+PLANETAS:''')
+        for planeta in self.planetas_obj:
+            print(f"-.{planeta.name}")
+
+        while True:
+            planeta_input = ((input("Ingrese el planeta destino: ")).strip()).lower()
+
+            planeta_destino = None
+
+            for planeta in self.planetas_obj:
+                if planeta_input in (planeta.name).lower():
+                    planeta_destino = planeta
+
+            if planeta_destino == None:
+                print('No se ha encontrado el planeta')
+                continue
+            else:
+                break
+
+
+
+
         nave = input("Ingrese la nave a utilizar: ")
 
         armas = [input("Ingrese arma (o presione Enter para omitir): ") for _ in range(7)]
