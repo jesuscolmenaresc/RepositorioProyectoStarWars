@@ -12,18 +12,22 @@ class App:
     planetas_obj  = []
     personajes_obj = []
     misiones_obj = []
+    nombres_planetas = []
+    nombres_naves = []
+    nombres_armas = []
+    nombres_integrantes = []
 
     def start(self):
         print('''BIENVENIDO
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
-        self.cargar_datos_peliculas()
+        # self.cargar_datos_peliculas()
         print('Peliculas ha sido cargado exitosamente...')
-        self.cargar_datos_especies()
+        # self.cargar_datos_especies()
         print('Especies ha sido cargado exitosamente...')
-        self.cargar_datos_planetas()
+        # self.cargar_datos_planetas()
         print('Planetas ha sido cargado exitosamente...')
-        self.cargar_datos_personajes()
+        # self.cargar_datos_personajes()
         print(f'Personajes ha sido cargado exitosamente...')
 
         self.menu()
@@ -374,46 +378,171 @@ SUBMENÚ MISIONES
 
         nombre = input("Ingrese el nombre de la misión: ")
 
+        db = open('planets.csv')
+        reader = csv.reader(db)
+        next(reader)
+        for fila in reader:
+            nombre_planeta = fila[1]
+            self.nombres_planetas.append(nombre_planeta)
+
         print('''----------------------------------------
 PLANETAS:''')
-        for planeta in self.planetas_obj:
-            print(f"-.{planeta.name}")
+
+        for planeta in self.nombres_planetas:
+            print(f'-.{planeta}')
 
         while True:
             planeta_input = ((input("Ingrese el planeta destino: ")).strip()).lower()
 
-            planeta_destino = None
+            planeta_mision = None
 
-            for planeta in self.planetas_obj:
-                if planeta_input in (planeta.name).lower():
-                    planeta_destino = planeta
+            for planeta in self.nombres_planetas:
+                if planeta_input in (planeta).lower():
+                    planeta_mision = planeta
+                    print(f'Se ha seleccionado el planeta: {planeta}')
 
-            if planeta_destino == None:
+            if planeta_mision == None:
                 print('No se ha encontrado el planeta')
                 continue
             else:
                 break
 
 
+        db = open('starships.csv')
+        reader = csv.reader(db)
+        next(reader)
+        for fila in reader:
+            nombre_nave = fila[1]
+            self.nombres_naves.append(nombre_nave)
+
+        print('''----------------------------------------
+NAVES:''')
+
+        for nave in self.nombres_naves:
+            print(f'-.{nave}')
+
+        while True:
+            nave_input = input("Ingrese la nave a utilizar: ")
+
+            nave_mision = None
+
+            for nave in self.nombres_naves:
+                if nave_input in (nave).lower():
+                    nave_mision = nave
+
+            if nave_mision == None:
+                print('No se ha encontrado la nave')
+                continue
+            else:
+                print(f'Se ha seleccionado la nave: {nave}')
+                break
 
 
-        nave = input("Ingrese la nave a utilizar: ")
+        db = open('weapons.csv')
+        reader = csv.reader(db)
+        next(reader)
+        for fila in reader:
+            nombre_arma = fila[1]
+            self.nombres_armas.append(nombre_arma)
 
-        armas = [input("Ingrese arma (o presione Enter para omitir): ") for _ in range(7)]
+        print('''----------------------------------------
+ARMAS:''')
 
-        integrantes = [input("Ingrese integrante (o presione Enter para omitir): ") for _ in range(7)]
+        for arma in self.nombres_armas:
+            print(f'-.{arma}')
 
-        mision = Mision(nombre, planeta_destino, nave, armas, integrantes)
+        armas_mision = []
+        
+        while True: 
+            if len(armas_mision) >= 7:
+                break
+            else:
+                while True:
+                    arma_mision = None
+                    arma_input = input("Ingrese arma a utilizar (o presione Enter para no seleccionar un arma): ")
 
-        self.misiones.append(mision)
+                    if arma_input == '':
+                        arma_mision = 'No seleccionado'
+                        print('No se ha seleccionado ningun arma')
+                        break
+
+                    for arma in self.nombres_armas:
+                        if arma_input in (arma).lower():
+                            arma_mision = arma
+                            print(f'Se ha seleccionado el arma {arma}')   
+                            break
+
+                    if arma_mision == None:
+                        print('No se ha encontrado el arma')
+                        continue
+                    
+                    break
+                armas_mision.append(arma_mision)
+   
+
+        db = open('characters.csv')
+        reader = csv.reader(db)
+        next(reader)
+        for fila in reader:
+            nombre_integrante = fila[1]
+            self.nombres_integrantes.append(nombre_integrante)
+
+        print('''----------------------------------------
+INTEGRANTES:''')
+
+        for integrante in self.nombres_integrantes:
+            print(f'-.{integrante}')
+
+        integrantes_mision = []
+        
+        while True: 
+            if len(integrantes_mision) >= 7:
+                break
+            else:
+                while True:
+                    integrante_mision = None
+                    integrante_input = input("Ingrese integrante (o presione Enter para no seleccionar ningun integrante): ")
+
+                    if integrante_input == '':
+                        integrante_mision = 'No seleccionado'
+                        print('No se ha seleccionado ningun integrante')
+                        break
+
+                    for integrante in self.nombres_integrantes:
+                        if integrante_input in (integrante).lower():
+                            integrante_mision = integrante
+                            print(f'Se ha seleccionado el integrante {integrante}')   
+                            break
+
+                    if integrante_mision == None:
+                        print('No se ha encontrado el integrante')
+                        continue
+                    
+                    break
+                integrantes_mision.append(integrante_mision)
+
+        mision = Mision(nombre, planeta_mision, nave_mision, armas_mision, integrantes_mision)
+
+        self.misiones_obj.append(mision)
         print("Misión agregada exitosamente.")
 
     # Requerimiento I: Modificar Mision
     def modificar_mision(self):
-        nombre_mision = input("Ingrese el nombre de la misión a modificar: ")
+        if self.misiones_obj == []:
+            print('No existen misiones creadas.')
+            return
+
+        for mision in self.misiones_obj:
+            print('-. {mision.nombre}')
+
+        nombre_mision_input = input("Ingrese el nombre de la misión a modificar: ")
 
         # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
-        mision = next((m for m in self.misiones if m.nombre == nombre_mision), None)
+
+        for m in self.misiones_obj:
+            if m.nombre == nombre_mision_input:
+                mision = m
+                break
 
         if not mision:
             print("Misión no encontrada.")
@@ -426,68 +555,127 @@ PLANETAS:''')
         opcion = input("Escribe el número de la opción que deseas modificar: ")
 
         if opcion == '1':
-            nueva_nave = input("Ingrese la nueva nave a utilizar: ")
-            mision.nave = nueva_nave
+
+            print('''----------------------------------------
+NAVES:''')
+
+            for nave in self.nombres_naves:
+                print(f'-.{nave}')
+
+            while True:
+                nave_input = input("Ingrese la nave a utilizar: ")
+                nave_mision = None
+                for nave in self.nombres_naves:
+                    if nave_input in (nave).lower():
+                        nave_mision = nave
+
+                if nave_mision == None:
+                    print('No se ha encontrado la nave')
+                    continue
+                else:
+                    mision.nave = nave_mision
+                    print(f'Se ha actualiza la nave: {nave}')
+                    break
+
             print("Nave actualizada exitosamente.")
 
         elif opcion == '2':
-            print("Actualmente las armas de la misión son: ", mision.armas)
+            print("Actualmente las armas de la misión son: ")
+            for arma in mision.armas:
+                print(f'-. {arma}')
+
             decision = input("¿Deseas agregar o eliminar armas? (agregar/eliminar): ")
 
-            if decision.lower() == 'agregar':
+            if (decision.lower()).strip() == 'agregar':
+
                 while len(mision.armas) < 7:
-                    nueva_arma = input("Ingrese la nueva arma a añadir o escriba 'salir' para terminar: ")
+
+                    for arma in self.nombres_armas:
+                        print(f'-.{arma}')
+
+                    nueva_arma = ((input("Ingrese la nueva arma a añadir o escriba 'salir' para terminar: ")).lower()).strip()
                     if nueva_arma.lower() == 'salir':
                         break
-
-                    if nueva_arma not in mision.armas:
-                        mision.armas.append(nueva_arma)
-                        print("Arma añadida.")
-
                     else:
-                        print("Esta arma ya está en la lista.")
+                        arma_agregar = None
+                        for arma in self.nombres_armas:
+                            if nueva_arma in (arma).lower():  
+                                arma_agregar = arma
 
+                        if arma_agregar == None:
+                            print('No se ha encontrado el arma')
+                            continue
+                        else:
+                            mision.armas.append(arma_agregar)
+                            print(f"Arma {arma_agregar} añadida.")
+                            break
+                
                 if len(mision.armas) == 7:
                     print("Has alcanzado el máximo número de armas permitidas (7).")
 
-            elif decision.lower() == 'eliminar':
-                arma_a_eliminar = input("Ingrese el arma a eliminar: ")
-                if arma_a_eliminar in mision.armas:
-                    mision.armas.remove(arma_a_eliminar)
-                    print("Arma eliminada.")
+            elif (decision.lower()).strip() == 'eliminar':
+                arma_a_eliminar = (input("Ingrese el arma a eliminar: ").lower()).strip()
+                arma_eliminada = None
 
-                else:
+                for arma in mision.armas:
+                    if arma_a_eliminar in arma.lower():
+                        arma_eliminada = arma
+                        mision.armas.remove(arma_eliminada)
+                        print(f"Arma {arma_eliminada} eliminada.")
+                        break
+
+                if arma_eliminada == None:
                     print("El arma no se encuentra en la lista.")
 
             else:
                 print("Opción no válida.")
 
         elif opcion == '3':
-            print("Actualmente los integrantes de la misión son: ", mision.integrantes)
-            decision = input("¿Deseas agregar o eliminar integrantes? (agregar/eliminar): ")
-            if decision.lower() == 'agregar':
-                while len(mision.integrantes) < 7:
-                    nuevo_integrante = input("Ingrese el nuevo integrante a añadir o escriba 'salir' para terminar: ")
-                    if nuevo_integrante.lower() == 'salir':
-                        break
-                    if nuevo_integrante not in mision.integrantes:
-                        mision.integrantes.append(nuevo_integrante)
-                        print("Integrante añadido.")
+            print("Actualmente los integrantes de la misión son: ")
+            for integrante in mision.integrantes:
+                print(f'-. {integrante}')
 
+            decision = input("¿Deseas agregar o eliminar integrantes? (agregar/eliminar): ")
+
+            if (decision.lower()).strip() == 'agregar':
+
+                while len(mision.integrantes) < 7:
+
+                    for integrante in self.nombres_integrantes:
+                        print(f'-.{integrante}')
+
+                    nuevo_integrante = ((input("Ingrese el nuevo integrante a añadir o escriba 'salir' para terminar: ")).lower()).strip()
+                    if nuevo_integrante == 'salir':
+                        break
                     else:
-                        print("Este integrante ya está en la lista.")
+                        integrante_agregar = None
+                        for integrante in self.nombres_integrantes:
+                            if nuevo_integrante in (integrante).lower():  
+                                integrante_agregar = integrante
+                                break
+
+                        if integrante_agregar == None:
+                            print('No se ha encontrado el integrante')
+                            continue
+                        else:
+                            mision.integrantes.append(integrante_agregar)
+                            print(f"Integrante {integrante_agregar} añadido.")
+                            break
 
                 if len(mision.integrantes) == 7:
                     print("Has alcanzado el máximo número de integrantes permitidos (7).")
 
-            elif decision.lower() == 'eliminar':
-                integrante_a_eliminar = input("Ingrese el integrante a eliminar: ")
+            elif (decision.lower()).strip() == 'eliminar':
+                integrante_a_eliminar = (input("Ingrese el integrante a eliminar: ").lower()).strip()
+                integrante_eliminado = None
 
-                if integrante_a_eliminar in mision.integrantes:
-                    mision.integrantes.remove(integrante_a_eliminar)
-                    print("Integrante eliminado.")
+                for integrante in mision.integrantes:
+                    if integrante_a_eliminar in integrante.lower():
+                        integrante_eliminado = integrante
+                        mision.integrantes.remove(integrante_eliminado)
+                        print(f"Integrante {integrante_eliminado} eliminado.")
 
-                else:
+                if integrante_eliminado == None:
                     print("El integrante no se encuentra en la lista.")
 
             else:
@@ -496,23 +684,30 @@ PLANETAS:''')
         else:
             print("Opción no válida.")
 
-    # Requerimiento J: Visualizar mision
+    # Visualizar mision
     def visualizar_mision(self):
-        nombre_mision = input("Ingrese el nombre de la misión a visualizar: ")
+
+        for m in self.misiones_obj:
+            print(f'-. {m.nombre}')
+        nombre_mision_input = input("Ingrese el nombre de la misión a visualizar: ")
 
         # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
-        mision = next((m for m in self.misiones if m.nombre == nombre_mision), None)
+
+        for m in self.misiones_obj:
+            if m.nombre == nombre_mision_input:
+                mision = m
+                break
 
         if mision:
             mision.mostrar_detalle()
         else:
             print("Misión no encontrada.")
 
-    # Requerimiento K: Guardar misiones
+    # Guardar misiones
     def guardar_misiones(self):
         # Se abre el archivo en modo de escritura
         with open('misiones.txt', 'w') as file:
-            for mision in self.misiones:
+            for mision in self.misiones_obj:
                 # Se agrega el separador '|' entre armas para que ',' sea solo para separar atributos principales
                 armas = '|'.join(mision.armas)
 
@@ -527,7 +722,7 @@ PLANETAS:''')
         try:
             # Intentar abrir el archivo en modo de lectura
             with open('misiones.txt', 'r') as file:
-                self.misiones = []  # Limpiar la lista actual de misiones para evitar duplicados
+                self.misiones_obj = []  # Limpiar la lista actual de misiones para evitar duplicados
                 for line in file:
                     nombre, planeta_destino, nave, armas_str, integrantes_str = line.strip().split(',')
 
@@ -538,7 +733,7 @@ PLANETAS:''')
                     integrantes = integrantes_str.split(';')
                     mision = Mision(nombre, planeta_destino, nave, armas, integrantes)
 
-                    self.misiones.append(mision)
+                    self.misiones_obj.append(mision)
             print("Misiones cargadas exitosamente.")
 
         except FileNotFoundError:
@@ -546,7 +741,7 @@ PLANETAS:''')
             open('misiones.txt', 'w').close()
             print("No se encontró el archivo de misiones, se ha creado un archivo nuevo.")
 
-            self.misiones = []  # Asegurarse de que la lista de misiones esté vacía
+            self.misiones_obj = []  # Asegurarse de que la lista de misiones esté vacía
 
         except Exception as e:
             print(f"Error al cargar misiones: {str(e)}")
