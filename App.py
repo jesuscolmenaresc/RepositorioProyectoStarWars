@@ -11,22 +11,25 @@ import pandas as pd
 class App:
     # Clase principal de la aplicacion que gestion la interacción del usuario y la carga de datos asi como los menús
 
-    peliculas_obj = [] # Type: list
-    especies_obj = [] # Type: list
-    planetas_obj  = [] # Type: list
-    personajes_obj = [] # Type: list
-    misiones_obj = [] # Type: list
-    nombres_planetas = [] # Type: list
-    nombres_naves = [] # Type: list
-    nombres_armas = [] # Type: list
-    nombres_integrantes = [] # Type: list
+    peliculas_obj = [] # Tipo: list
+    especies_obj = [] # Tipo: list
+    planetas_obj  = [] # Tipo: list
+    personajes_obj = [] # Tipo: list
+    misiones_obj = [] # Tipo: list
+    nombres_planetas = [] # Tipo: list
+    nombres_naves = [] # Tipo: list
+    nombres_armas = [] # Tipo: list
+    nombres_integrantes = [] # Tipo: list
 
     def start(self):
         # Este modulo llama la carga de datos del programa utilizando la api swapi.dev y posteriormente inicia la aplicacion
 
-        print('''BIENVENIDO
+        print('''----------------------------------------
+              BIENVENIDO
+    Hace mucho tiempo, en una galaxia muy, muy lejana...
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
+
         self.cargar_datos_peliculas()
         print('Peliculas ha sido cargado exitosamente...')
         self.cargar_datos_especies()
@@ -43,14 +46,14 @@ Iniciando carga de datos, por favor espere...''')
         
         while True:
             print('''----------------------------------------'
-MENU
+        MENU PRINCIPAL
 ----------------------------------------
 1. Lista de Peliculas de la saga
 2. Lista de las especies de seres vivos de la saga
-3. Lista de planetas
-4. Buscar personaje
+3. Lista de planetas de la saga
+4. Buscar personaje de la saga
 5. Grafico de cantidad de personajes nacidos en cada planeta
-6. Grafico de caracteristicas de naves
+6. Grafico de caracteristicas de naves de la saga
 7. Tabla de estadisticas sobre naves
 8. Misiones
 0. Salir
@@ -105,25 +108,9 @@ MENU
 
             elif opcion_menu == '5':
                 self.grafico_cantidad_personas()
-                while True:
-                    opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
-                    if opcion_0 == '0':
-                        print('Regresando...')
-                        break
-                    else:
-                        print('Opcion invalida')
-                        continue  
 
             elif opcion_menu == '6':
                 self.graficos_caracteristicas()
-                while True:
-                    opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
-                    if opcion_0 == '0':
-                        print('Regresando...')
-                        break
-                    else:
-                        print('Opcion invalida')
-                        continue  
             
             elif opcion_menu == '7':
                 self.tablas_naves()
@@ -139,6 +126,7 @@ MENU
                 self.submenu_misiones()
 
             elif opcion_menu == '0':
+                print('¡Que la fuerza te acompañe!')
                 print('Saliendo...')
                 break
             else:
@@ -404,10 +392,12 @@ SUBMENÚ MISIONES
             self.nombres_planetas.append(nombre_planeta)
 
         print('''----------------------------------------
-PLANETAS:''')
+PLANETAS:
+----------------------------------------''')
 
         for planeta in self.nombres_planetas: # Se muestran todos los planetas
             print(f'-.{planeta}')
+        print('----------------------------------------')
 
         while True:
             planeta_input = ((input("Ingrese el planeta destino: ")).strip()).lower()
@@ -435,10 +425,12 @@ PLANETAS:''')
             self.nombres_naves.append(nombre_nave)
 
         print('''----------------------------------------
-NAVES:''')
+NAVES:
+----------------------------------------''')
 
         for nave in self.nombres_naves: # Se muestran todas las naves
             print(f'-.{nave}')
+        print('----------------------------------------')
 
         while True:
             nave_input = input("Ingrese la nave a utilizar: ")
@@ -466,11 +458,13 @@ NAVES:''')
             self.nombres_armas.append(nombre_arma)
 
         print('''----------------------------------------
-ARMAS:''')
+ARMAS:
+----------------------------------------''')
 
         # Se muestran todas las armas posibles
         for arma in self.nombres_armas:
             print(f'-.{arma}')
+        print('----------------------------------------')
 
         armas_mision = []
         
@@ -509,11 +503,12 @@ ARMAS:''')
             self.nombres_integrantes.append(nombre_integrante)
 
         print('''----------------------------------------
-INTEGRANTES:''')
+INTEGRANTES:
+----------------------------------------''')
 
         for integrante in self.nombres_integrantes: # Se muestran los integrantes
             print(f'-.{integrante}')
-
+        print('----------------------------------------')
         integrantes_mision = []
         
         # Se repite el algoritmo utilizado en la parte de seleccion de armas
@@ -587,11 +582,12 @@ INTEGRANTES:''')
         if opcion == '1': # Se modifica la nave, mostrando las naves existentes y sobreescribiendola en la anterior
 
             print('''----------------------------------------
-NAVES:''')
+NAVES:
+----------------------------------------''')
 
             for nave in self.nombres_naves:
                 print(f'-.{nave}')
-
+            print('----------------------------------------')
             while True:
                 nave_input = input("Ingrese la nave a utilizar: ")
                 nave_mision = None
@@ -620,9 +616,12 @@ NAVES:''')
 
                 while len(mision.armas) < 7: # Verifica que hayan menos de 7 armas guardadas
 
+                    print('''----------------------------------------
+ARMAS
+----------------------------------------''')
                     for arma in self.nombres_armas: # Muestra las armas disponibles
                         print(f'-.{arma}')
-
+                    print('----------------------------------------')
                     nueva_arma = ((input("Ingrese la nueva arma a añadir o escriba 'salir' para terminar: ")).lower()).strip()
                     if nueva_arma.lower() == 'salir':
                         break
@@ -671,8 +670,12 @@ NAVES:''')
 
                 while len(mision.integrantes) < 7:
 
+                    print('''----------------------------------------
+INTEGRANTES
+----------------------------------------''')
                     for integrante in self.nombres_integrantes:
                         print(f'-.{integrante}')
+                    print('----------------------------------------')
 
                     nuevo_integrante = ((input("Ingrese el nuevo integrante a añadir o escriba 'salir' para terminar: ")).lower()).strip()
                     if nuevo_integrante == 'salir':
