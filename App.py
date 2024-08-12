@@ -27,13 +27,13 @@ class App:
         print('''BIENVENIDO
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
-        # self.cargar_datos_peliculas()
+        self.cargar_datos_peliculas()
         print('Peliculas ha sido cargado exitosamente...')
-        # self.cargar_datos_especies()
+        self.cargar_datos_especies()
         print('Especies ha sido cargado exitosamente...')
-        # self.cargar_datos_planetas()
+        self.cargar_datos_planetas()
         print('Planetas ha sido cargado exitosamente...')
-        # self.cargar_datos_personajes()
+        self.cargar_datos_personajes()
         print(f'Personajes ha sido cargado exitosamente...')
 
         self.menu()
