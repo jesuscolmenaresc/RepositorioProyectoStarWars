@@ -9,17 +9,21 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 class App:
-    peliculas_obj = []
-    especies_obj = []
-    planetas_obj  = []
-    personajes_obj = []
-    misiones_obj = []
-    nombres_planetas = []
-    nombres_naves = []
-    nombres_armas = []
-    nombres_integrantes = []
+    # Clase principal de la aplicacion que gestion la interacción del usuario y la carga de datos asi como los menús
+
+    peliculas_obj = [] # Type: list
+    especies_obj = [] # Type: list
+    planetas_obj  = [] # Type: list
+    personajes_obj = [] # Type: list
+    misiones_obj = [] # Type: list
+    nombres_planetas = [] # Type: list
+    nombres_naves = [] # Type: list
+    nombres_armas = [] # Type: list
+    nombres_integrantes = [] # Type: list
 
     def start(self):
+        # Este modulo llama la carga de datos del programa utilizando la api swapi.dev y posteriormente inicia la aplicacion
+
         print('''BIENVENIDO
 Iniciando carga de datos, por favor espere...''')
         # Carga de datos
@@ -35,6 +39,7 @@ Iniciando carga de datos, por favor espere...''')
         self.menu()
 
     def menu(self):
+        # Menú de la aplicación, para que el usuario pueda acceder a cada caracteristica
         
         while True:
             print('''----------------------------------------'
@@ -54,6 +59,8 @@ MENU
 
             if opcion_menu == '1':
                 self.peliculas_saga()
+
+                # Este while True se realizó con el objetivo de que el usuario pueda regresar al menú anterior cuando termine la acción
                 while True:
                     opcion_0 = (input('Escriba \'0\' para volver al menu anterior: ')).strip()
                     if opcion_0 == '0':
@@ -140,18 +147,19 @@ MENU
 
 
     def personajes_saga(self):
+        # Se ejecuta la opcion 4 del menu principal, utilizando un algoritmo de busqueda lineal
         nombre_input = ((input('Escriba el nombre del personaje que desea buscar: ')).strip()).lower()
         for personaje in self.personajes_obj: 
             if nombre_input in (personaje.name).lower():
                 Personaje.show(personaje)
    
     def cargar_datos_personajes(self):
-        # Se cargan los datos de la API y se guardan en una variable
+        # Se cargan los datos de la API swapi.dev y se guardan en variable self.personajes_obj
 
         personajes = []
 
         url = 'https://swapi.dev/api/people/'
-        while True:
+        while True: # Dado que los datos se encuentran en distinas paginas, se utiliza la key 'next' para obtener la siguiente pagina
                 db = rq.get(url).json()
                 personajes.extend(db['results'])
                 url = db['next']
@@ -199,12 +207,14 @@ MENU
             self.personajes_obj.append(Personaje(nombre, nombre_planeta_origen, nombre_episodios_aparece, genero, nombre_especie, nombre_naves_utiliza, nombre_vehiculos_utiliza))
 
     def peliculas_saga(self):
+        # Se ejecuta la opcion 1 del menu, se recorre toda la lista de objetos y se muestran los datos de la pelicula
         for pelicula in self.peliculas_obj:
             Pelicula.show(pelicula)
 
     def cargar_datos_peliculas(self):
 
-        # Se cargan los datos de API y se guardan en una variable
+        # Se cargan los datos de API swapi.dev y se guardan en una variable
+
         url = 'https://swapi.dev/api/films/'
         db = rq.get(url).json()
 
@@ -241,17 +251,18 @@ MENU
             self.peliculas_obj.append(Pelicula(titulo,numero_episodio,fecha_lanzamiento,opening_crawl,director,nombres_especies,nombres_planetas, nombres_personajes))
 
     def especies_saga(self):
+        # Se ejecuta la opcion 3 del menu principal recorriendo la lista de especies e imprimiendo
         for especie in self.especies_obj:
             Especie.show(especie)
 
     def cargar_datos_especies(self):
 
-        # Se cargan los datos de la API
+        # Se cargan los datos de la API swapi.dev
 
         especies = []
 
         url = f'https://swapi.dev/api/species'
-        while True:
+        while True: # Dado que los datos se encuentran en distinas paginas, se utiliza la key 'next' para obtener la siguiente pagina
                 db = rq.get(url).json()
                 especies.extend(db['results'])
                 url = db['next']
@@ -274,6 +285,7 @@ MENU
             lengua_materna = especie['language']
 
             # Nombre de personajes donde aparece
+
             url_personajes_lista = especie['people']
             nombres_personajes = []
 
@@ -282,7 +294,7 @@ MENU
                 nombre_personaje = db_aux['name']
                 nombres_personajes.append(nombre_personaje)
 
-            # Buscar los nombres de los episodios que aparece
+            # Nombres de los episodios que aparece
 
             episodios_especie = []
 
@@ -297,25 +309,13 @@ MENU
 
             self.especies_obj.append(Especie(nombre, altura, planeta, lengua_materna, clasificacion, nombres_personajes, nombre_episodios))
 
-    def busqueda_binaria(self,lista,valor):
-        low = 0
-        high = len(lista) - 1
-        while low <= high:
-            mid = (low + high) // 2
-            if lista[mid] == valor:
-                return lista[mid]
-            elif lista[mid] < valor:
-                low = mid + 1
-            else:
-                high = mid - 1
-        return None
-
     def planetas_saga(self):
+        # Se ejecuta la opcion 2 del menu principal
         for planeta in self.planetas_obj:
             Planeta.show(planeta)
 
     def cargar_datos_planetas(self):
-        # Se cargan los datos de la API
+        # Se cargan los datos de la API swapi.dev
         planetas = []
 
         url = 'https://swapi.dev/api/planets'
@@ -355,6 +355,8 @@ MENU
             self.planetas_obj.append(Planeta(nombre, periodo_rotacion, periodo_orbita, clima, poblacion, nombre_episodios, nombre_personajes_planeta))
 
     def submenu_misiones(self):
+        # Se ejecuta la opcion 8 del menu principal
+        # Se crea un nuevo submenu para acceder a cada una de las opciones dentro de las misiones
         while True:
             print('''----------------------------------------
 SUBMENÚ MISIONES
@@ -384,17 +386,19 @@ SUBMENÚ MISIONES
                 print("Opción inválida.")
                 continue
 
-    # Construir mision
     def agregar_mision(self):
-        if len(self.misiones_obj) >= 5:
+        # Agregar Mision
+        # Se ejecuta la opción 1 del submenu misiones
+        if len(self.misiones_obj) >= 5: # Se establece un limite de misiones para sobrecargar el programa
             print("No puedes definir más de 5 misiones.")
             return
 
         nombre = input("Ingrese el nombre de la misión: ")
 
+        # Se lee la base de datos a partir de los archivos en formato csv
         db = open('planets.csv')
         reader = csv.reader(db)
-        next(reader)
+        next(reader) # Se pasa a la siguiente fila dentro del archivo para saltarse el encabezado
         for fila in reader:
             nombre_planeta = fila[1]
             self.nombres_planetas.append(nombre_planeta)
@@ -402,7 +406,7 @@ SUBMENÚ MISIONES
         print('''----------------------------------------
 PLANETAS:''')
 
-        for planeta in self.nombres_planetas:
+        for planeta in self.nombres_planetas: # Se muestran todos los planetas
             print(f'-.{planeta}')
 
         while True:
@@ -410,7 +414,8 @@ PLANETAS:''')
 
             planeta_mision = None
 
-            for planeta in self.nombres_planetas:
+            # Busqueda lineal para encontrar el planeta que coincide con la busqueda y guardarlo
+            for planeta in self.nombres_planetas: 
                 if planeta_input in (planeta).lower():
                     planeta_mision = planeta
                     print(f'Se ha seleccionado el planeta: {planeta}')
@@ -421,7 +426,7 @@ PLANETAS:''')
             else:
                 break
 
-
+        # Se lee la base de datos a partir de los archivos en formato csv
         db = open('starships.csv')
         reader = csv.reader(db)
         next(reader)
@@ -432,7 +437,7 @@ PLANETAS:''')
         print('''----------------------------------------
 NAVES:''')
 
-        for nave in self.nombres_naves:
+        for nave in self.nombres_naves: # Se muestran todas las naves
             print(f'-.{nave}')
 
         while True:
@@ -440,6 +445,7 @@ NAVES:''')
 
             nave_mision = None
 
+            # Se utiliza algoritmo de busqueda lineal y se guarda aquel que coincide con la busqueda del usuario
             for nave in self.nombres_naves:
                 if nave_input in (nave).lower():
                     nave_mision = nave
@@ -451,7 +457,7 @@ NAVES:''')
                 print(f'Se ha seleccionado la nave: {nave}')
                 break
 
-
+        # Se lee la base de datos a partir de los archivos en formato csv
         db = open('weapons.csv')
         reader = csv.reader(db)
         next(reader)
@@ -462,38 +468,39 @@ NAVES:''')
         print('''----------------------------------------
 ARMAS:''')
 
+        # Se muestran todas las armas posibles
         for arma in self.nombres_armas:
             print(f'-.{arma}')
 
         armas_mision = []
         
         while True: 
-            if len(armas_mision) >= 7:
+            if len(armas_mision) >= 7: # Se verifica que se guarden un maximo de 7 armas
                 break
             else:
                 while True:
                     arma_mision = None
                     arma_input = input("Ingrese arma a utilizar (o presione Enter para no seleccionar un arma): ")
 
-                    if arma_input == '':
+                    if arma_input == '': # Si se presiona Enter, quedara vacio este slot del arma
                         arma_mision = 'No seleccionado'
                         print('No se ha seleccionado ningun arma')
                         break
 
-                    for arma in self.nombres_armas:
+                    for arma in self.nombres_armas: # Si se escribe un nombre, lo buscara para posteriormente guardar el arma que coincida
                         if arma_input in (arma).lower():
                             arma_mision = arma
                             print(f'Se ha seleccionado el arma {arma}')   
                             break
 
-                    if arma_mision == None:
+                    if arma_mision == None: # Si no se encuentra ninguna coincidencia volvera al while True
                         print('No se ha encontrado el arma')
                         continue
                     
                     break
                 armas_mision.append(arma_mision)
    
-
+        # Se lee la base de datos a partir de los archivos en formato csv
         db = open('characters.csv')
         reader = csv.reader(db)
         next(reader)
@@ -504,11 +511,12 @@ ARMAS:''')
         print('''----------------------------------------
 INTEGRANTES:''')
 
-        for integrante in self.nombres_integrantes:
+        for integrante in self.nombres_integrantes: # Se muestran los integrantes
             print(f'-.{integrante}')
 
         integrantes_mision = []
         
+        # Se repite el algoritmo utilizado en la parte de seleccion de armas
         while True: 
             if len(integrantes_mision) >= 7:
                 break
@@ -535,23 +543,27 @@ INTEGRANTES:''')
                     break
                 integrantes_mision.append(integrante_mision)
 
+        # Se guarda la mision como un objeto 
         mision = Mision(nombre, planeta_mision, nave_mision, armas_mision, integrantes_mision)
 
         self.misiones_obj.append(mision)
         print("Misión agregada exitosamente.")
 
-    # Requerimiento I: Modificar Mision
+
     def modificar_mision(self):
-        if self.misiones_obj == []:
-            print('No existen misiones creadas.')
+        # Modificar Mision
+        # Se ejecuta la opcion 2 del submenu de misiones
+        if self.misiones_obj == []: # Si la lista de misiones esta vacia no se ejecuta el codigo
+            print('No existen misiones creadas.') 
             return
 
+        # Se muestran los nombres de las misiones
         for mision in self.misiones_obj:
             print('-. {mision.nombre}')
 
         nombre_mision_input = input("Ingrese el nombre de la misión a modificar: ")
 
-        # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
+        # Se busca si existe alguna mision con el nombre que se acaba de ingresar
 
         for m in self.misiones_obj:
             if m.nombre == nombre_mision_input:
@@ -568,7 +580,7 @@ INTEGRANTES:''')
         print("3. Integrantes")
         opcion = input("Escribe el número de la opción que deseas modificar: ")
 
-        if opcion == '1':
+        if opcion == '1': # Se modifica la nave, mostrando las naves existentes y sobreescribiendola en la anterior
 
             print('''----------------------------------------
 NAVES:''')
@@ -593,7 +605,7 @@ NAVES:''')
 
             print("Nave actualizada exitosamente.")
 
-        elif opcion == '2':
+        elif opcion == '2': 
             print("Actualmente las armas de la misión son: ")
             for arma in mision.armas:
                 print(f'-. {arma}')
@@ -602,9 +614,9 @@ NAVES:''')
 
             if (decision.lower()).strip() == 'agregar':
 
-                while len(mision.armas) < 7:
+                while len(mision.armas) < 7: # Verifica que hayan menos de 7 armas guardadas
 
-                    for arma in self.nombres_armas:
+                    for arma in self.nombres_armas: # Muestra las armas disponibles
                         print(f'-.{arma}')
 
                     nueva_arma = ((input("Ingrese la nueva arma a añadir o escriba 'salir' para terminar: ")).lower()).strip()
@@ -621,7 +633,7 @@ NAVES:''')
                             continue
                         else:
                             mision.armas.append(arma_agregar)
-                            print(f"Arma {arma_agregar} añadida.")
+                            print(f"Arma {arma_agregar} añadida.") # Si el arma se encontro, se agrega a la lista de armas de la mision
                             break
                 
                 if len(mision.armas) == 7:
@@ -634,7 +646,7 @@ NAVES:''')
                 for arma in mision.armas:
                     if arma_a_eliminar in arma.lower():
                         arma_eliminada = arma
-                        mision.armas.remove(arma_eliminada)
+                        mision.armas.remove(arma_eliminada) # Cuando tiene identificado el nombre del arma la busca y la elimimna
                         print(f"Arma {arma_eliminada} eliminada.")
                         break
 
@@ -644,7 +656,7 @@ NAVES:''')
             else:
                 print("Opción no válida.")
 
-        elif opcion == '3':
+        elif opcion == '3': # La modificacion de integrantes se da igual que la modificacion de armas del apartado anterior
             print("Actualmente los integrantes de la misión son: ")
             for integrante in mision.integrantes:
                 print(f'-. {integrante}')
@@ -698,14 +710,15 @@ NAVES:''')
         else:
             print("Opción no válida.")
 
-    # Visualizar mision
-    def visualizar_mision(self):
 
-        for m in self.misiones_obj:
+    def visualizar_mision(self):
+        # Visualizar mision
+        # Se ejecuta la opcion 3 del submenu misiones
+        for m in self.misiones_obj: # Se muestran los nombres de las misiones
             print(f'-. {m.nombre}')
         nombre_mision_input = input("Ingrese el nombre de la misión a visualizar: ")
 
-        # Esta iteracion busca si existe alguna mision con el nombre que se acaba de ingresar
+        # Se busca si existe alguna mision con el nombre que se acaba de ingresar
 
         for m in self.misiones_obj:
             if m.nombre == nombre_mision_input:
@@ -713,12 +726,14 @@ NAVES:''')
                 break
 
         if mision:
-            mision.mostrar_detalle()
+            mision.mostrar_detalle() # Se muestra los detalles de la mision
         else:
             print("Misión no encontrada.")
 
-    # Guardar misiones
+
     def guardar_misiones(self):
+        # Guardar misiones
+        # Se ejecuta la opcion 4 del submenu misiones 
         # Se abre el archivo en modo de escritura
         with open('misiones.txt', 'w') as file:
             for mision in self.misiones_obj:
@@ -731,23 +746,26 @@ NAVES:''')
                 file.write(f"{mision.nombre},{mision.planeta_destino},{mision.nave},{armas},{integrantes}\n")
         print("Misiones guardadas exitosamente.")
 
-    # Requerimiento L: Cargar misiones
     def cargar_misiones(self):
+        # Cargar misiones
+        # Se ejecuta la opcion 5 del submenu de misiones
+
+        # Se utiliza el comando try porque si el archivo no existe y se obtiene un error no se detenga el programa
         try:
             # Intentar abrir el archivo en modo de lectura
-            with open('misiones.txt', 'r') as file:
-                self.misiones_obj = []  # Limpiar la lista actual de misiones para evitar duplicados
-                for line in file:
-                    nombre, planeta_destino, nave, armas_str, integrantes_str = line.strip().split(',')
+            with open('misiones.txt', 'r') as archivo:
+                self.misiones_obj = []  # Limpiar la lista actual de misiones para evitar duplicados, guardandose los datos que existan en el archivo misiones
+                for linea in archivo:
+                    nombre, planeta_destino, nave, armas_str, integrantes_str = linea.strip().split(',')
 
                     # El separador '|' entre armas es para que ',' separe los atributos principales de la mision
                     armas = armas_str.split('|')
 
                     # El separador ';' entre integrantes es para que ',' separe los atributos principales de la mision
                     integrantes = integrantes_str.split(';')
-                    mision = Mision(nombre, planeta_destino, nave, armas, integrantes)
+                    mision = Mision(nombre, planeta_destino, nave, armas, integrantes) # Se guarda la mision como objeto
 
-                    self.misiones_obj.append(mision)
+                    self.misiones_obj.append(mision) # Se anexa a la lista misiones
             print("Misiones cargadas exitosamente.")
 
         except FileNotFoundError:
@@ -755,28 +773,36 @@ NAVES:''')
             open('misiones.txt', 'w').close()
             print("No se encontró el archivo de misiones, se ha creado un archivo nuevo.")
 
-            self.misiones_obj = []  # Asegurarse de que la lista de misiones esté vacía
+            self.misiones_obj = [] 
 
-        except Exception as e:
+        except Exception as e: # Si existe cualquier otro error en la lectura del archivo, puede ser por formato
             print(f"Error al cargar misiones: {str(e)}")
 
-    def personajes_en_cada_planeta(self): 
+    def personajes_en_cada_planeta(self):
+        # Se crean las listas para los graficos del apartado 5 del menu principal
+
+        # Se lee la base de datos a partir del csv
         info =open('characters.csv', 'r')
         planetas={}
         caracteres= csv.DictReader(info)
-        for elementos in caracteres:
+        for elementos in caracteres: # Se recorre cada diccionario
             planeta=elementos['homeworld']
+
+            # Si la llave no existe, se crea, si existe, se suma un elemento
             if planeta in planetas:
                 planetas[planeta]+=1
             else:
                 planetas[planeta]=1
 
-        personajes_planeta=list(planetas.keys())
-        cantidad_personajes_planeta=list(planetas.values())
-        info.close()
+        personajes_planeta=list(planetas.keys()) # Se crea una lista con las llaves del diccionario
+        cantidad_personajes_planeta=list(planetas.values()) # Se crea una lista con los valores del diccionario
+        info.close() # Se cierra el archivo
         return personajes_planeta, cantidad_personajes_planeta
 
     def grafico_cantidad_personas(self):
+        # Se ejecuta la opcion 5 del menu principal
+        # Se crea grafico con la herramienta matplotlib
+
         personaje_planeta, cantidad_personajes_planeta = self.personajes_en_cada_planeta()
         fig, ax= plt.subplots()
         plt.bar(personaje_planeta,cantidad_personajes_planeta)
@@ -786,89 +812,95 @@ NAVES:''')
         plt.xticks(rotation=45,ha='right')
         plt.show()
 
-    def longitud_naves(self):  
+    def longitud_naves(self):
+        # Se crea un diccionario con las llaves de las naves y su longitud  
         info=open('starships.csv','r')
         longitud_naves={}
         caracteres=csv.DictReader(info)  
         for elementos in caracteres:
-            longitud_naves[elementos['name']]=(float((elementos['length'])))/100 # es del tipo: float 
+            longitud_naves[elementos['name']]=(float((elementos['length'])))/100 # es del tipo: float y se escalan los datos para tener mejor lectura
         info.close()
         return longitud_naves
 
     def capacidad_carga(self):
+        # Se crea un diccionario con las llaves de las naves y su capacidad de carga  
         info=open('starships.csv','r')
         capacidad_carga={}
         caracteres=csv.DictReader(info) 
         for elementos in caracteres:
-            if elementos['cargo_capacity'] == '':
+            if elementos['cargo_capacity'] == '': # Dado que existen elementos vacios se le asigna un valor de 0
                 elementos['cargo_capacity'] = 0
-            capacidad_carga[elementos['name']]=float((elementos['cargo_capacity']))/1000000 # es del tipo: float
+            capacidad_carga[elementos['name']]=float((elementos['cargo_capacity']))/1000000 # es del tipo: float y se escalan los datos para tener mejor lectura
         info.close()
         return capacidad_carga
 
     def clasificacion_hiperimpulsor(self):
+        # Se crea un diccionario con las llaves de las naves y su calificacion del hiperimpulsor  
         info=open('starships.csv', 'r')
         clasificacion_hiperimpulsor = {}
         caracteres=csv.DictReader(info)
         for elementos in caracteres:
-            if elementos['hyperdrive_rating'] == '':
+            if elementos['hyperdrive_rating'] == '': # Dado que existen elementos vacios se le asigna un valor de 0
                 elementos['hyperdrive_rating'] = 0
-            clasificacion_hiperimpulsor[elementos['name']] = (float((elementos['hyperdrive_rating'])))*10  # es del tipo: float
+            clasificacion_hiperimpulsor[elementos['name']] = (float((elementos['hyperdrive_rating'])))*10  # es del tipo: float y se escalan los datos para tener mejor lectura
         info.close()
         return clasificacion_hiperimpulsor
 
     def MGLT_naves(self):
+        # Se crea un diccionario con las llaves de las naves y sus "megaluz por hora" MGLT
         info=open('starships.csv', 'r')
         MGLT_naves={}
         caracteres = csv.DictReader(info)
         for elementos in caracteres:
-            if elementos['MGLT'] == '':
+            if elementos['MGLT'] == '': # Dado que existen elementos vacios se le asigna un valor de 0
                 elementos['MGLT'] = 0
-            MGLT_naves[elementos['name']] = float((elementos['MGLT']))  # es del tipo: float
+            MGLT_naves[elementos['name']] = float((elementos['MGLT']))  # es del tipo: float y se escalan los datos para tener mejor lectura
         info.close()
         return MGLT_naves
 
     def graficos_caracteristicas(self):
+        # Se ejecuta la opcion 6 del menu principal
 
+        # Se leen los datos de los diccionarios
         naves_longitud = self.longitud_naves()
         naves_capacidad_carga = self.capacidad_carga()
-        naves_clasificacion_hiperimpulsor = self.clasificacion_hiperimpulsor()
+        naves_calificacion_hiperimpulsor = self.clasificacion_hiperimpulsor()
         naves_mglt = self.MGLT_naves()
 
-        # Ordenar llaves y valores de cada diccionario
-        naves = sorted(naves_longitud.keys())
-        longitudes = [naves_longitud[nave] for nave in naves]
-        capacidades_carga = [naves_capacidad_carga[nave] for nave in naves]
-        clasificaciones_hiperimpulsor = [naves_clasificacion_hiperimpulsor[nave] for nave in naves]
-        mglts = [naves_mglt[nave] for nave in naves]
+        # Se obtiene una lista de llaves y una lista de cada valor
+        naves = list(naves_longitud.keys()) # Se obtienen una lista de llaves ordenadas
+        longitudes = list(naves_longitud.values())
+        capacidades_carga = list(naves_capacidad_carga.values())
+        calificaciones_hiperimpulsor = list(naves_calificacion_hiperimpulsor.values())
+        mglts = list(naves_mglt.values())
 
-        # Crear el gráfico
+        # Se crea el gráfico
         fig, ax = plt.subplots()
 
-        # Agregar las barras para cada característica
+        # Se agregan las barras para cada característica
         ax.bar(naves, longitudes, label=('Longitud (x10^2)'))
         ax.bar(naves, capacidades_carga, bottom=longitudes, label=('Capacidad de carga (x10^6)'))
-        ax.bar(naves, clasificaciones_hiperimpulsor, bottom=[x + y for x, y in zip(longitudes, capacidades_carga)], label=('Clasificación de hiperimpulsor (x10^-1)'))
-        ax.bar(naves, mglts, bottom=[x + y + z for x, y, z in zip(longitudes, capacidades_carga, clasificaciones_hiperimpulsor)], label='MGLT (x10^1)')
+        ax.bar(naves, calificaciones_hiperimpulsor, bottom=[x + y for x, y in zip(longitudes, capacidades_carga)], label=('Clasificación de hiperimpulsor (x10^-1)'))
+        ax.bar(naves, mglts, bottom=[x + y + z for x, y, z in zip(longitudes, capacidades_carga, calificaciones_hiperimpulsor)], label='MGLT (x10^1)')
 
-        # Agregar título y leyenda
+        # Se agrega el titulo, la leyenda, lectura del eje y, se muestra el grafico
         ax.set_title('Características de naves')
         ax.legend()
-        plt.xticks(rotation=90,ha='right')
+        plt.xticks(rotation=45,ha='right')
         plt.ylabel('Cantidad de atributos')
 
-        # Mostrar el gráfico
         plt.show()
 
     def tablas_naves(self):
+        # Se ejecuta la parte 7 del menu principal
 
-        ruta = 'starships.csv'  # Cambia esto a la ruta de tu archivo
-        df = pd.read_csv(ruta)
+        ruta = 'starships.csv' 
+        df = pd.read_csv(ruta) # Se lee el archivo con la libreria pandas
 
-        # Seleccionar las columnas relevantes
+        # Se seleccionan las columnas que se necesitan como un dataframe
         estadisticas_df = df[['starship_class', 'hyperdrive_rating', 'MGLT', 'max_atmosphering_speed', 'cost_in_credits']]
 
-        # Calcular las estadísticas para "Clasificación de hiperimpulsor"
+        # Se calculan las estadísticas para "Calificación de hiperimpulsor"
         hyperdrive_estadisticas = estadisticas_df.groupby('starship_class').agg(
             hyperdrive_media=('hyperdrive_rating', 'mean'),
             hyperdrive_moda=('hyperdrive_rating', lambda x: x.mode()[0] if not x.mode().empty else None),
@@ -876,13 +908,13 @@ NAVES:''')
             hyperdrive_maximo=('hyperdrive_rating', 'max')
         ).reset_index()
 
-        # Redondear y reemplazar NaN en hyperdrive_stats
+        # Se redondean los decimales y los valores que tengan NaN se modifican por un guion
         hyperdrive_estadisticas = hyperdrive_estadisticas.round(2).fillna("-")
 
-        # Renombrar columnas de hyperdrive_stats
+        # Se renombran las columnas de hyperdrive_estadisticas para que tenga nombre en español
         hyperdrive_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
 
-        # Calcular las estadísticas para "MGLT"
+        # Se calculan las estadísticas para "MGLT"
         MGLT_estadisticas = estadisticas_df.groupby('starship_class').agg(
             MGLT_media=('MGLT', 'mean'),
             MGLT_moda=('MGLT', lambda x: x.mode()[0] if not x.mode().empty else None),
@@ -890,13 +922,13 @@ NAVES:''')
             MGLT_maximo=('MGLT', 'max')
         ).reset_index()
 
-        # Redondear y reemplazar NaN en MGLT_stats
+        # Se redondean los decimales y los valores que tengan NaN se modifican por un guion
         MGLT_estadisticas = MGLT_estadisticas.round(2).fillna("-")
 
-        # Renombrar columnas de MGLT_stats
+        # Se renombran las columnas de MGLT_estadisticas para que tenga nombre en español
         MGLT_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
 
-        # Calcular las estadísticas para "Velocidad máxima en atmósfera"
+        # Se calculan las estadísticas para "Velocidad máxima en atmósfera"
         max_speed_estadisticas = estadisticas_df.groupby('starship_class').agg(
             max_speed_media=('max_atmosphering_speed', 'mean'),
             max_speed_moda=('max_atmosphering_speed', lambda x: x.mode()[0] if not x.mode().empty else None),
@@ -904,13 +936,13 @@ NAVES:''')
             max_speed_maximo=('max_atmosphering_speed', 'max')
         ).reset_index()
 
-        # Redondear y reemplazar NaN en max_speed_stats
+        # Se redondean los decimales y los valores que tengan NaN se modifican por un guion
         max_speed_estadisticas = max_speed_estadisticas.round(2).fillna("-")
 
-        # Renombrar columnas de max_speed_stats
+        # Se renombran las columnas de max_speed__estadisticas para que tenga nombre en español
         max_speed_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
 
-        # Calcular las estadísticas para "Costo (en créditos)"
+        # Se calculan las estadísticas para "Costo (en créditos)"
         cost_estadisticas = estadisticas_df.groupby('starship_class').agg(
             cost_media=('cost_in_credits', 'mean'),
             cost_moda=('cost_in_credits', lambda x: x.mode()[0] if not x.mode().empty else None),
@@ -918,21 +950,26 @@ NAVES:''')
             cost_maximo=('cost_in_credits', 'max')
         ).reset_index()
 
-        # Redondear y reemplazar NaN en cost_stats
+        # Se redondean los decimales y los valores que tengan NaN se modifican por un guion
         cost_estadisticas = cost_estadisticas.round(2).fillna("-")
 
-        # Renombrar columnas de cost_stats
+        # Se renombran las columnas de costs__estadisticas para que tenga nombre en español
         cost_estadisticas.columns = ['Clase de Nave', 'Media', 'Moda', 'Mínimo', 'Máximo']
 
-        # Mostrar las tablas
+        # Se muestran todas las tablas
+        print("---------------------------------------------------------------------")
         print("Estadísticas para 'Clasificación de hiperimpulsor':")
         print(hyperdrive_estadisticas, "\n")
 
+        print("---------------------------------------------------------------------")
         print("Estadísticas para 'MGLT':")
         print(MGLT_estadisticas, "\n")
 
+        print("---------------------------------------------------------------------")
         print("Estadísticas para 'Velocidad máxima en atmósfera':")
         print(max_speed_estadisticas, "\n")
 
+        print("---------------------------------------------------------------------")
         print("Estadísticas para 'Costo (en créditos)':")
         print(cost_estadisticas, "\n")
+        print("---------------------------------------------------------------------")
