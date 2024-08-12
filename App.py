@@ -539,7 +539,7 @@ INTEGRANTES:''')
                     if integrante_mision in integrantes_mision:
                         print('El integrante ya se encuentra en la mision')
                         continue
-                    
+
                     if integrante_mision == None:
                         print('No se ha encontrado el integrante')
                         continue
@@ -686,6 +686,9 @@ NAVES:''')
 
                         if integrante_agregar == None:
                             print('No se ha encontrado el integrante')
+                            continue
+                        elif integrante_agregar in mision.integrantes:
+                            print('El integrante ya se encuentra en la lista')
                             continue
                         else:
                             mision.integrantes.append(integrante_agregar)
