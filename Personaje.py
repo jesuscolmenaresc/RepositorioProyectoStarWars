@@ -15,13 +15,23 @@ Nombre del Planeta de origen: {self.homeworld_name}
 Genero: {self.gender}
 Especie: {self.specie}
 Titulos de los episodios en los que interviene:''')
-        for episodio_aparece in self.nombre_episodios_aparece:
-             print(f'-. {episodio_aparece}')
+        if self.nombre_episodios_aparece == []:
+            print("No se ha encontrado en ningun episodio")
+        else:
+            for episodio_aparece in self.nombre_episodios_aparece:
+                print(f'-. {episodio_aparece}')
+        
         print('Nombre de las naves que utiliza:')
-        for nombre_nave in self.nombre_naves_utiliza:
-            print(f'-. {nombre_nave}')
+        if self.nombre_naves_utiliza == []:
+            print("No ha utilizado ninguna nave")
+        else:
+            for nombre_nave in self.nombre_naves_utiliza:
+                print(f'-. {nombre_nave}')
 
-        print(f'''Nombre de los vehiculos que utiliza:''')        
-        for nombre_vehiculo in self.nombre_vehiculos_utiliza:
-            print(f'-. {nombre_vehiculo}')
+        print(f'''Nombre de los vehiculos que utiliza:''')
+        if self.nombre_vehiculos_utiliza == []:
+            print("No ha utilizado ningun vehiculo")
+        else:
+            for nombre_vehiculo in self.nombre_vehiculos_utiliza:
+                print(f'-. {nombre_vehiculo}')
         print('--------------------------------')

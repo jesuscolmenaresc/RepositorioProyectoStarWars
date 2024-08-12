@@ -17,11 +17,17 @@ Lengua materna: {self.language}
 Clasificación: {self.classification}
 Nombre de personajes que pertenecen a la especie:''')
 
-        for nombre_personaje in self.nombre_personajes_especie:
-            print(f'-. {nombre_personaje}')
+        if self.nombre_personajes_especie == []:
+            print("No se encontraron personajes que pertenezcan a esta especie")
+        else:
+            for nombre_personaje in self.nombre_personajes_especie:
+                print(f'-. {nombre_personaje}')
 
-        print(f'''Nombre de episodios donde aparece la especie:''')        
-        for nombre_episodio in self.nombre_episodios_aparece:
-            print(f'-. {nombre_episodio}')
+        print(f'''Nombre de episodios donde aparece la especie:''')     
+        if self.nombre_episodios_aparece == []:
+            print("No se encontraron episodios donde la especie aparezca")
+        else:
+            for nombre_episodio in self.nombre_episodios_aparece:
+                print(f'-. {nombre_episodio}')
 
         print('--------------------------------')

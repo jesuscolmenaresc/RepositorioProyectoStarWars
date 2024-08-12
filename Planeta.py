@@ -17,14 +17,17 @@ Clima: {self.climate}
 Poblacion: {self.population}
 Nombre de episodios en donde aparece el planeta:''')
 
-        for nombre_episodio in self.nombre_episodios_aparece:
-            if nombre_episodio == []:
-                print("No aparece en ningun episodio")
-            else:
+        if self.nombre_episodios_aparece == []:
+            print("No se ha encontrado en ningun episodio")
+        else:
+            for nombre_episodio in self.nombre_episodios_aparece:
                 print(f'-. {nombre_episodio}')
 
         print(f'''Nombre de personajes originarios de este planeta:''')        
-        for nombre_personaje in self.nombre_personajes_planeta:
-            print(f'-. {nombre_personaje}')
+        if self.nombre_personajes_planeta == []:
+            print("No se han encontrado personajes originarios de este planeta")
+        else:
+            for nombre_personaje in self.nombre_personajes_planeta:
+                print(f'-. {nombre_personaje}')
 
         print('--------------------------------')
