@@ -418,12 +418,12 @@ PLANETAS:''')
             for planeta in self.nombres_planetas: 
                 if planeta_input in (planeta).lower():
                     planeta_mision = planeta
-                    print(f'Se ha seleccionado el planeta: {planeta}')
 
             if planeta_mision == None:
                 print('No se ha encontrado el planeta')
                 continue
             else:
+                print(f'Se ha seleccionado el planeta: {planeta_mision}')
                 break
 
         # Se lee la base de datos a partir de los archivos en formato csv
@@ -454,7 +454,7 @@ NAVES:''')
                 print('No se ha encontrado la nave')
                 continue
             else:
-                print(f'Se ha seleccionado la nave: {nave}')
+                print(f'Se ha seleccionado la nave: {nave_mision}')
                 break
 
         # Se lee la base de datos a partir de los archivos en formato csv
@@ -536,6 +536,10 @@ INTEGRANTES:''')
                             print(f'Se ha seleccionado el integrante {integrante}')   
                             break
 
+                    if integrante_mision in integrantes_mision:
+                        print('El integrante ya se encuentra en la mision')
+                        continue
+                    
                     if integrante_mision == None:
                         print('No se ha encontrado el integrante')
                         continue
